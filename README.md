@@ -1,3 +1,4 @@
+
 # Ransomware Early-Warning Detection Model
 
 An endpoint early-warning detection engine that leverages behavioral analytics and sliding time windows to detect ransomware file encryption campaigns before wide-scale data destruction occurs.
@@ -11,7 +12,7 @@ Traditional signature-based antivirus solutions struggle against novel, zero-day
 
 ### Technical Architecture
 
-
+![Technical Architecture](./docs/image/photo.png)
 ---
 
 ## Telemetry Schema & Safety Guards
@@ -134,3 +135,4 @@ uvicorn src.api.app:app --reload --port 8000
 Interactive API Playground Docs: Open your browser and navigate to http://127.0.0.1:8000/docs to review and execute real-time payload queries.
 
 Retrieve Detection List: Send an HTTP GET request to http://127.0.0.1:8000/alerts to access your prioritized threat arrays in JSON format.
+
