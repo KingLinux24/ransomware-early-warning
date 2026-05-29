@@ -64,3 +64,73 @@ The system achieves robust precision and recall scores against balanced validati
     accuracy                         1.0000       155
    macro avg     1.0000    1.0000    1.0000       155
 weighted avg     1.0000    1.0000    1.0000       155
+
+```
+
+Getting Started & Execution Guide
+Follow these steps to clone, configure, and execute the ransomware early-warning detection pipeline on your local machine.
+
+1. Prerequisites & Cloning
+Ensure you have Python 3.8+ installed on your host system. Clone the repository and navigate to the project root directory:
+
+```Bash
+git clone https://github.com/<your-username>/ransomware-early-warning.git
+cd ransomware-early-warning
+```
+2. Environment Setup
+Initialize a localized virtual environment to isolate the project dependency packages, then upgrade package management utilities:
+
+```Bash
+# Create the virtual environment
+python -m venv .venv
+```
+# Activate the environment
+# On Linux/macOS:
+```
+source .venv/bin/activate
+```
+# On Windows (Command Prompt):
+```
+.venv\Scripts\activate.bat
+```
+# On Windows (PowerShell):
+```
+.venv\Scripts\Activate.ps1
+```
+# Upgrade pip and install the required modules
+```
+pip install -U pip
+pip install -r requirements.txt
+```
+3. Executing the Data Pipeline
+The detection engine relies on data flows moving from raw telemetry ingestion to live validation. Run each component sequentially, or execute the master compound script statement below:
+
+Step-by-Step Commands:
+```Bash
+# Step A: Generate safe, synthetic background and attack telemetry logs
+python src/data/generate_telemetry.py
+
+# Step B: Process raw JSONL logs into 1-minute behavioral window metrics
+python src/features/build_features.py
+
+# Step C: Train the Random Forest Classifier and export the model state
+python src/models/train.py
+
+# Step D: Process telemetry through the model to identify malicious anomalies
+python src/detection/detect.py
+
+# Step E: Calculate the operational Time-to-Detect response delta
+python src/models/time_to_detect.py
+Monolithic One-Shot Execution:
+
+python src/data/generate_telemetry.py && python src/features/build_features.py && python src/models/train.py && python src/detection/detect.py && python src/models/time_to_detect.py
+```
+4. Running the Threat Alert API
+Once the pipeline has processed the features and flags, you can serve the active alerts over a local web service network:
+
+```Bash
+uvicorn src.api.app:app --reload --port 8000
+```
+Interactive API Playground Docs: Open your browser and navigate to http://127.0.0.1:8000/docs to review and execute real-time payload queries.
+
+Retrieve Detection List: Send an HTTP GET request to http://127.0.0.1:8000/alerts to access your prioritized threat arrays in JSON format.
